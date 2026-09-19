@@ -1,0 +1,6 @@
+services:
+  devops-build:
+    build: .
+    ports:
+      - "3000:80"
+      
