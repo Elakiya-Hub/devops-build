@@ -1,0 +1,224 @@
+# DevOps Build Project
+
+## Project Overview
+
+This project demonstrates a complete DevOps workflow for deploying a React web application using Docker, Jenkins, Docker Hub, and AWS EC2.
+
+The project includes Docker containerization, Docker Compose, Jenkins CI/CD for `dev` and `prod` branches, and server monitoring using Prometheus and Grafana.
+
+## Technologies Used
+
+* AWS EC2
+* Git & GitHub
+* Docker
+* Docker Compose
+* Jenkins
+* Docker Hub
+* Nginx
+* Prometheus
+* Node Exporter
+* Grafana
+
+## Project Workflow
+
+```text
+GitHub
+   ↓
+Jenkins
+   ↓
+Docker Build
+   ↓
+Docker Hub
+   ↓
+AWS EC2
+   ↓
+Application Deployment
+   ↓
+Prometheus + Grafana Monitoring
+```
+
+## Docker Setup
+
+The React production build is copied into an Nginx Docker image.
+
+## Docker Compose
+
+Docker Compose is used to run the application using the `docker-compose.yml` file.
+
+```bash
+docker compose up -d
+```
+
+To stop the application:
+
+```bash
+docker compose down
+```
+
+## Git and GitHub
+
+The project source code is maintained in GitHub.
+
+### Check Repository Status
+
+```bash
+git status
+```
+
+### Add Changes
+
+```bash
+git add .
+```
+
+### Commit Changes
+
+```bash
+git commit -m "Update project"
+```
+
+### Push Changes
+
+```bash
+git push origin dev
+```
+
+Production changes are pushed to:
+
+```bash
+git push origin prod
+```
+
+## Jenkins CI/CD
+
+Jenkins is used to automate the build and deployment process.
+
+The Jenkins pipeline performs the following steps:
+
+1. Checkout source code from GitHub
+2. Build Docker image
+3. Login to Docker Hub
+4. Tag the Docker image
+5. Push the image to Docker Hub
+6. Run the application container
+
+Example Docker Hub commands used in the pipeline:
+
+```bash
+docker login
+docker tag devops-build:v1 elakiyadocker/dev:v1
+docker push elakiyadocker/dev:v1
+```
+
+The production pipeline pushes the image to the `prod` Docker Hub repository.
+
+## Deployment on AWS EC2
+
+The application is deployed on an AWS EC2 Ubuntu server.
+
+Useful commands used on the server:
+
+```bash
+docker --version
+docker ps
+git clone <repository-url>
+git pull
+```
+
+The application is accessed through port `3000`.
+
+## Monitoring
+
+A monitoring system was configured using **Node Exporter, Prometheus, and Grafana**.
+
+### Monitoring Flow
+
+```text
+EC2 Server
+    ↓
+Node Exporter
+    ↓
+Prometheus
+    ↓
+Grafana
+```
+
+### Node Exporter
+
+Node Exporter collects Linux system metrics.
+
+Node Exporter runs on port `9100`.
+
+To check the service:
+
+```bash
+sudo systemctl status node_exporter
+```
+
+To view metrics:
+
+```bash
+curl http://localhost:9100/metrics
+```
+
+### Prometheus
+
+Prometheus collects and stores metrics from Node Exporter.
+
+To check Prometheus:
+
+```bash
+sudo systemctl status prometheus
+```
+
+To verify the configuration:
+
+```bash
+promtool check config /etc/prometheus/prometheus.yml
+```
+
+To check whether the targets are up:
+
+```bash
+curl http://localhost:9090/api/v1/query?query=up
+```
+
+### Grafana
+
+Grafana is used to visualize the metrics collected by Prometheus.
+
+Grafana runs on port `3001`.
+
+The Prometheus data source is configured in Grafana using:
+
+```text
+http://localhost:9090
+```
+
+A Node Exporter dashboard is used to monitor CPU, memory, disk, and network usage.
+
+## Deployment Script
+
+A `deploy.sh` script is used to start the application container.
+
+```bash
+#!/bin/bash
+
+docker run -d --name devops-build-container -p 3000:80 devops-build:latest
+```
+
+Make the script executable:
+
+```bash
+chmod +x deploy.sh
+```
+
+Run the deployment script:
+
+```bash
+./deploy.sh
+```
+
+## Conclusion
+
+This project provided practical experience with Docker containerization, Git/GitHub, Jenkins CI/CD, Docker Hub, AWS EC2 deployment, and application monitoring using Prometheus and Grafana.

@@ -18,8 +18,8 @@ pipeline {
                 )]) {
                     sh '''
                         echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-                        docker tag devops-build:v1 $DOCKERHUB_USERNAME/dev:v1
-                        docker push $DOCKERHUB_USERNAME/dev:v1
+                        docker tag devops-build:v1 $DOCKERHUB_USERNAME/prod:v1
+                        docker push $DOCKERHUB_USERNAME/prod:v1
                         docker logout
                     '''
                 }
